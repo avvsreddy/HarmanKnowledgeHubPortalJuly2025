@@ -7,6 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
+ Submit-and-Browse-Article
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+
+ main
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\HarmanKnowledgeHubPortal.Domain\HarmanKnowledgeHubPortal.Domain.csproj" />
   </ItemGroup>
 
