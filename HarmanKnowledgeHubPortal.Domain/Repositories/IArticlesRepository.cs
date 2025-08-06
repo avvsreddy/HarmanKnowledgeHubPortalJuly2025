@@ -1,14 +1,21 @@
 ﻿using HarmanKnowledgeHubPortal.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace HarmanKnowledgeHubPortal.Domain.Repositories
 {
     public interface IArticlesRepository
     {
         void Submit(Article article);
-        void Update(Article article);
-        void Approve(List<int> articleIds);
+        void Update(Article article); 
+        
         void Reject(List<int> articleIds);
-        List<Article> Browse(int categoryId, string tag);
+
+        void Approve(List<int> articleIds);
+        List<Article> Browse(int categoryId,string tag);
         List<Article> Review(int categoryId);
     }
 }
