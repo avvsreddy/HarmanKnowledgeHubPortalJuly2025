@@ -55,5 +55,6 @@ namespace HarmanKnowledgeHubPortal.Domain.Services
         {
             await _dashboardRepo.SoftDeleteReportAsync(id);
         }
+
     }
 }
