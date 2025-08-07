@@ -14,11 +14,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
- Submit-and-Browse-Article
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="9.0.3" />
-
- main
   </ItemGroup>
 
   <ItemGroup>
@@ -26,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HarmanKnowledgeHubPortal.Data\HarmanKnowledgeHubPortal.Data.csproj" />
     <ProjectReference Include="..\HarmanKnowledgeHubPortal.Domain\HarmanKnowledgeHubPortal.Domain.csproj" />
   </ItemGroup>
 
