@@ -1,7 +1,7 @@
 ﻿using HarmanKnowledgeHubPortal.Domain.Entities;
 
 namespace HarmanKnowledgeHubPortal.Domain.Repositories
-{
+{ 
     public interface IArticlesRepository
     {
         void Submit(Article article);
