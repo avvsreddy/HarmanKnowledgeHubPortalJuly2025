@@ -9,10 +9,9 @@ namespace HarmanKnowledgeHubPortal.Domain.Repositories
 {
     public interface IUserRepository
     {
-        User GetByEmail(string email);
-        User GetById(int id);
-        void Add(User user);
-        bool Exists(string email);
-
+        Task<User?> GetByEmailAsync(string email);
+        Task<User?> GetByIdAsync(int id);
+        Task AddAsync(User user);
+        Task<bool> ExistsAsync(string email);
     }
 }

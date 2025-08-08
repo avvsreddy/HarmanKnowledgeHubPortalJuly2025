@@ -9,38 +9,39 @@ using System.Threading.Tasks;
 
 namespace HarmanKnowledgeHubPortal.Data
 {
-    public class UserRepository : IUserRepository
-    {
-        private readonly AppDbContext _context;
-
-        public UserRepository(AppDbContext context)
+        public class UserRepository : IUserRepository
         {
-            _context = context;
-        }
+            private readonly AppDbContext _context;
 
-        public void Add(User user)
-        {
-            _context.Users.Add(user);
-            _context.SaveChanges();
-        }
+            public UserRepository(AppDbContext context)
+            {
+                _context = context;
+            }
 
-        public bool Exists(string email)
-        {
-            return _context.Users.Any(u => u.Email == email);
-        }
+            public async Task AddAsync(User user)
+            {
+                await _context.Users.AddAsync(user);
+                await _context.SaveChangesAsync();
+            }
 
-        public User GetByEmail(string email)
-        {
-            return _context.Users
-                .Include(u => u.Roles)  // EAGER LOAD ROLES
-                .FirstOrDefault(u => u.Email == email);
-        }
+            public async Task<bool> ExistsAsync(string email)
+            {
+                return await _context.Users.AnyAsync(u => u.Email == email);
+            }
 
-        public User GetById(int id)
-        {
-            return _context.Users
-                .Include(u => u.Roles)  // EAGER LOAD ROLES
-                .FirstOrDefault(u => u.Id == id);
+            public async Task<User?> GetByEmailAsync(string email)
+            {
+                return await _context.Users
+                    .Include(u => u.Roles)
+                    .FirstOrDefaultAsync(u => u.Email == email);
+            }
+
+            public async Task<User?> GetByIdAsync(int id)
+            {
+                return await _context.Users
+                    .Include(u => u.Roles)
+                    .FirstOrDefaultAsync(u => u.Id == id);
+            }
         }
     }
-}
+

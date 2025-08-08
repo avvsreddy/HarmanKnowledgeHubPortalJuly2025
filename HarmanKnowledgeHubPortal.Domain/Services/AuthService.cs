@@ -23,7 +23,7 @@ namespace HarmanKnowledgeHubPortal.Domain.Services
 
             public AuthResponseDto Register(RegisterDto dto)
             {
-                if (_userRepo.Exists(dto.Email))
+                if (_userRepo.ExistsAsync(dto.Email))
                     throw new Exception("Email already registered");
 
                 var user = new User
@@ -36,7 +36,7 @@ namespace HarmanKnowledgeHubPortal.Domain.Services
                         _roleRepo.GetByName(roleName) ?? throw new Exception($"Role {roleName} not found")).ToList()
                 };
 
-                _userRepo.Add(user);
+                _userRepo.AddAsync(user);
 
                 return new AuthResponseDto
                 {
@@ -49,7 +49,7 @@ namespace HarmanKnowledgeHubPortal.Domain.Services
 
             public AuthResponseDto Login(LoginDto dto)
             {
-                var user = _userRepo.GetByEmail(dto.Email);
+                var user = _userRepo.GetByEmailAsync(dto.Email);
                 if (user == null || user.Password != dto.Password)
                     throw new Exception("Invalid credentials");
 
