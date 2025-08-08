@@ -4,66 +4,73 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HarmanKnowledgeHubPortal.Data
 {
-    public class ArticlesRepository : IArticlesRepository
-    {
-        private readonly AppDbContext _context;
-
-        public ArticlesRepository(AppDbContext context)
+        public class ArticlesRepository : IArticlesRepository
         {
-            _context = context;
-        }
+            private readonly AppDbContext _context;
 
-        public void Submit(Article article)
-        {
-            article.Status = ArticleStatus.PENDING;
-            article.DateSubmitted = DateTime.UtcNow;
-            _context.Articles.Add(article);
-            _context.SaveChanges();
-        }
+            public ArticlesRepository(AppDbContext context)
+            {
+                _context = context;
+            }
 
-        public void Update(Article article)
-        {
-            _context.Articles.Update(article);
-            _context.SaveChanges();
-        }
+            public async Task SubmitAsync(Article article)
+            {
+                article.Status = ArticleStatus.PENDING;
+                article.DateSubmitted = DateTime.UtcNow;
+                await _context.Articles.AddAsync(article);
+                await _context.SaveChangesAsync();
+            }
 
-        public void Approve(List<int> articleIds)
-        {
-            var articles = _context.Articles.Where(a => articleIds.Contains(a.Id)).ToList();
-            foreach (var article in articles)
-                article.Status = ArticleStatus.APPROVED;
+            public async Task UpdateAsync(Article article)
+            {
+                _context.Articles.Update(article);
+                await _context.SaveChangesAsync();
+            }
 
-            _context.SaveChanges();
-        }
+            public async Task ApproveAsync(List<int> articleIds)
+            {
+                var articles = await _context.Articles
+                    .Where(a => articleIds.Contains(a.Id))
+                    .ToListAsync();
 
-        public void Reject(List<int> articleIds)
-        {
-            var articles = _context.Articles.Where(a => articleIds.Contains(a.Id)).ToList();
-            foreach (var article in articles)
-                article.Status = ArticleStatus.REJECTED;
+                foreach (var article in articles)
+                    article.Status = ArticleStatus.APPROVED;
 
-            _context.SaveChanges();
-        }
+                await _context.SaveChangesAsync();
+            }
 
-        public List<Article> Browse(int categoryId, string tag)
-        {
-            return _context.Articles
-                .Include(a => a.Tags)
-                .Include(a => a.Category)
-                .Where(a => a.Status == ArticleStatus.APPROVED &&
-                            a.Category.Id == categoryId &&
-                            a.Tags.Any(t => t.TagName == tag))
-                .ToList();
-        }
+            public async Task RejectAsync(List<int> articleIds)
+            {
+                var articles = await _context.Articles
+                    .Where(a => articleIds.Contains(a.Id))
+                    .ToListAsync();
 
-        public List<Article> Review(int categoryId)
-        {
-            return _context.Articles
-                .Include(a => a.Category)
-                .Where(a => a.Status == ArticleStatus.PENDING &&
-                            a.Category.Id == categoryId)
-                .ToList();
+                foreach (var article in articles)
+                    article.Status = ArticleStatus.REJECTED;
+
+                await _context.SaveChangesAsync();
+            }
+
+            public async Task<List<Article>> BrowseAsync(int categoryId, string tag)
+            {
+                return await _context.Articles
+                    .Include(a => a.Tags)
+                    .Include(a => a.Category)
+                    .Where(a => a.Status == ArticleStatus.APPROVED &&
+                                a.Category.Id == categoryId &&
+                                a.Tags.Any(t => t.TagName == tag))
+                    .ToListAsync();
+            }
+
+            public async Task<List<Article>> ReviewAsync(int categoryId)
+            {
+                return await _context.Articles
+                    .Include(a => a.Category)
+                    .Where(a => a.Status == ArticleStatus.PENDING &&
+                                a.Category.Id == categoryId)
+                    .ToListAsync();
+            }
         }
     }
-}
+
 

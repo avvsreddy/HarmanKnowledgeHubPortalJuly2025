@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace HarmanKnowledgeHubPortal.Domain.Services
 {
-        public interface IArticleService
-        {
-        object GetPendingArticles(int categoryId);
-        void ReviewArticles(ReviewArticleDto dto); // Approve or Reject
-           
-        }
+    public interface IArticleService
+    {
+        Task<List<ReviewArticleDto>> GetPendingArticlesAsync(int categoryId);
+        // Approve or Reject
+        Task ReviewArticlesAsync(ReviewArticleDto dto);
     }
+}
 

@@ -11,51 +11,69 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HarmanKnowledgeHubPortal.Api.Controllers.AuthController
 {
-        [ApiController]
-        [Route("api/[controller]")]
-        public class AuthController : ControllerBase
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AuthController : ControllerBase
+    {
+        private readonly IAuthService _authService;
+
+        public AuthController(IAuthService authService)
         {
-            private readonly IAuthService _authService;
+            _authService = authService;
+        }
 
-            public AuthController(IAuthService authService)
+        /// <summary>
+        /// Registers a new user
+        /// </summary>
+        /// <param name="dto">User registration details</param>
+        /// <returns>JWT token and user info</returns>
+        [HttpPost("register")]
+        [ProducesResponseType(typeof(AuthResponseDto), 200)]
+        [ProducesResponseType(typeof(object), 400)]
+        public async Task<IActionResult> RegisterAsync([FromBody] RegisterDto dto)
+        {
+            try
             {
-                _authService = authService;
+                var result = await _authService.RegisterAsync(dto);
+                return Ok(result);
             }
-
-            [HttpPost("register")]
-            public IActionResult Register(RegisterDto dto)
+            catch (Exception ex)
             {
-                try
-                {
-                    var result = _authService.Register(dto);
-                    return Ok(result);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(new { message = ex.Message });
-                }
-            }
-
-            [HttpPost("login")]
-            public IActionResult Login(LoginDto dto)
-            {
-                try
-                {
-                    var result = _authService.Login(dto);
-                    return Ok(result);
-                }
-                catch (Exception ex)
-                {
-                    return Unauthorized(new { message = ex.Message });
-                }
-            }
-
-            [HttpPost("logout")]
-            public IActionResult Logout()
-            {
-                // Since JWT is stateless, client just deletes the token.
-                return Ok(new { message = "Logout successful — please clear token on client." });
+                return BadRequest(new { message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Logs in a user
+        /// </summary>
+        /// <param name="dto">Login credentials</param>
+        /// <returns>JWT token and user info</returns>
+        [HttpPost("login")]
+        [ProducesResponseType(typeof(AuthResponseDto), 200)]
+        [ProducesResponseType(typeof(object), 401)]
+        public async Task<IActionResult> LoginAsync([FromBody] LoginDto dto)
+        {
+            try
+            {
+                var result = await _authService.LoginAsync(dto);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Logs out the user (Client-side only)
+        /// </summary>
+        /// <returns>Logout confirmation</returns>
+        [HttpPost("logout")]
+        [ProducesResponseType(typeof(object), 200)]
+        public IActionResult Logout()
+        {
+            return Ok(new { message = "Logout successful — please clear token on client." });
+        }
     }
+}
 

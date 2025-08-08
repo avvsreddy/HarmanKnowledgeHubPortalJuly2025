@@ -9,10 +9,12 @@ namespace HarmanKnowledgeHubPortal.Domain.DTO
 {
     public class ReviewArticleDto
     {
-        [Required]
-        public List<int> ArticleIds { get; set; }
+        [Required(ErrorMessage = "ArticleIds are required.")]
+        [MinLength(1, ErrorMessage = "At least one article ID must be provided.")]
+        public List<int> ArticleIds { get; set; } = new();
 
-        [Required]
-        public string Action { get; set; } // "Approve" or "Reject"
+        [Required(ErrorMessage = "Action is required.")]
+        [RegularExpression("Approve|Reject", ErrorMessage = "Action must be either 'Approve' or 'Reject'.")]
+        public string Action { get; set; } = string.Empty; // Enforce specific allowed values
     }
 }

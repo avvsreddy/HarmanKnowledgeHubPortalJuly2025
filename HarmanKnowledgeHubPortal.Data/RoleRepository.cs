@@ -1,5 +1,6 @@
 ﻿using HarmanKnowledgeHubPortal.Domain.Entities;
 using HarmanKnowledgeHubPortal.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,15 +18,16 @@ namespace HarmanKnowledgeHubPortal.Data
                 _context = context;
             }
 
-            public Role GetByName(string roleName)
+            public async Task<Role?> GetByNameAsync(string roleName)
             {
-                return _context.Roles.FirstOrDefault(r => r.Name == roleName);
+                return await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
             }
 
-            public List<Role> GetAll()
+            public async Task<List<Role>> GetAllAsync()
             {
-                return _context.Roles.ToList();
+                return await _context.Roles.ToListAsync();
             }
         }
     }
+
 

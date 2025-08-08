@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HarmanKnowledgeHubPortal.Domain.Services
 {
-    public class ArticleService : IArticleService
+        public class ArticleService : IArticleService
         {
             private readonly IArticlesRepository _articleRepo;
             private readonly ICategoryRepository _categoryRepo;
@@ -19,15 +19,34 @@ namespace HarmanKnowledgeHubPortal.Domain.Services
                 _categoryRepo = categoryRepo;
             }
 
-            public void ReviewArticles(ReviewArticleDto dto)
+            public async Task ReviewArticlesAsync(ReviewArticleDto dto)
             {
-                if (dto.Action.ToLower() == "approve")
-                    _articleRepo.Approve(dto.ArticleIds);
-                else if (dto.Action.ToLower() == "reject")
-                    _articleRepo.Reject(dto.ArticleIds);
+                var action = dto.Action.ToLower();
+
+                if (action == "approve")
+                {
+                    await _articleRepo.ApproveAsync(dto.ArticleIds);
+                }
+                else if (action == "reject")
+                {
+                    await _articleRepo.RejectAsync(dto.ArticleIds);
+                }
                 else
-                    throw new Exception("Invalid action");
+                {
+                    throw new Exception("Invalid action. Only 'Approve' or 'Reject' are allowed.");
+                }
             }
- 
+
+            public async Task<List<ReviewArticleDto>> GetPendingArticlesAsync(int categoryId)
+            {
+                var articles = await _articleRepo.ReviewAsync(categoryId);
+
+                return articles.Select(article => new ReviewArticleDto
+                {
+                    ArticleIds = new List<int> { article.Id },
+                    Action = "Pending"
+                }).ToList();
+            }
+        }
     }
-}
+
