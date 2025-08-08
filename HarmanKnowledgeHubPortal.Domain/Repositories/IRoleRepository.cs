@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace HarmanKnowledgeHubPortal.Domain.Repositories
 {
-        public interface IRoleRepository
-        {
-            Role GetByName(string roleName);
-            List<Role> GetAll();
-        }
+    public interface IRoleRepository
+    {
+        Task<Role?> GetByNameAsync(string roleName);
+        Task<List<Role>> GetAllAsync();
     }
+}
 

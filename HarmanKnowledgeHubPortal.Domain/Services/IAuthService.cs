@@ -9,7 +9,7 @@ namespace HarmanKnowledgeHubPortal.Domain.Services
 {
         public interface IAuthService
         {
-            AuthResponseDto Register(RegisterDto dto);
-            AuthResponseDto Login(LoginDto dto);
-        }
+        Task<AuthResponseDto> RegisterAsync(RegisterDto dto);
+        Task<AuthResponseDto> LoginAsync(LoginDto dto);
+    }
     }
