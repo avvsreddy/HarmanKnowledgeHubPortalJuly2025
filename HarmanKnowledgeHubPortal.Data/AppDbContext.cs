@@ -37,6 +37,9 @@ namespace HarmanKnowledgeHubPortal.Data
             modelBuilder.Entity<Article>()
                 .HasOne(a => a.Category)
                 .WithMany(); // 1 Category -> many Articles
+
+            modelBuilder.Entity<Category>().HasQueryFilter(c => !c.IsDeleted);
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
