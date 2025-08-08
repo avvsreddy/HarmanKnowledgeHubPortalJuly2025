@@ -21,10 +21,19 @@ namespace HarmanKnowledgeHubPortal.Domain.Services
                 _roleRepo = roleRepo;
             }
 
-            public AuthResponseDto Register(RegisterDto dto)
+            public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
             {
-                if (_userRepo.ExistsAsync(dto.Email))
+                if (await _userRepo.ExistsAsync(dto.Email))
                     throw new Exception("Email already registered");
+
+                var roles = new List<Role>();
+                foreach (var roleName in dto.Roles)
+                {
+                    var role = await _roleRepo.GetByNameAsync(roleName);
+                    if (role == null)
+                        throw new Exception($"Role '{roleName}' not found");
+                    roles.Add(role);
+                }
 
                 var user = new User
                 {
@@ -32,24 +41,23 @@ namespace HarmanKnowledgeHubPortal.Domain.Services
                     Email = dto.Email,
                     Password = dto.Password, 
                     DateTimeCreated = DateTime.UtcNow,
-                    Roles = dto.Roles.Select(roleName =>
-                        _roleRepo.GetByName(roleName) ?? throw new Exception($"Role {roleName} not found")).ToList()
+                    Roles = roles
                 };
 
-                _userRepo.AddAsync(user);
+                await _userRepo.AddAsync(user);
 
                 return new AuthResponseDto
                 {
                     Email = user.Email,
                     Name = user.Name,
                     Roles = user.Roles.Select(r => r.Name).ToList(),
-                    Token = "mock-jwt-token" // Replace with real JWT logic
+                    Token = "mock-jwt-token" // Replace with actual JWT generation logic
                 };
             }
 
-            public AuthResponseDto Login(LoginDto dto)
+            public async Task<AuthResponseDto> LoginAsync(LoginDto dto)
             {
-                var user = _userRepo.GetByEmailAsync(dto.Email);
+                var user = await _userRepo.GetByEmailAsync(dto.Email);
                 if (user == null || user.Password != dto.Password)
                     throw new Exception("Invalid credentials");
 
@@ -58,9 +66,10 @@ namespace HarmanKnowledgeHubPortal.Domain.Services
                     Email = user.Email,
                     Name = user.Name,
                     Roles = user.Roles.Select(r => r.Name).ToList(),
-                    Token = "mock-jwt-token" // Replace with JWT generation
+                    Token = "mock-jwt-token" // Replace with actual JWT generation logic
                 };
             }
         }
     }
+
 

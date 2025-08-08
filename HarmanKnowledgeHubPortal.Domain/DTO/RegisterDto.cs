@@ -9,15 +9,19 @@ namespace HarmanKnowledgeHubPortal.Domain.DTO
 {
     public class RegisterDto
     {
-        [Required]
-        public string Name { get; set; }
+        [Required(ErrorMessage = "Name is required.")]
+        public string Name { get; set; } = string.Empty;
 
-        [Required, EmailAddress]
-        public string Email { get; set; }
+        [Required(ErrorMessage = "Email is required.")]
+        [EmailAddress(ErrorMessage = "Invalid email format.")]
+        public string Email { get; set; } = string.Empty;
 
-        [Required]
-        public string Password { get; set; }
+        [Required(ErrorMessage = "Password is required.")]
+        [MinLength(6, ErrorMessage = "Password must be at least 6 characters.")]
+        public string Password { get; set; } = string.Empty;
 
-        public List<string> Roles { get; set; } = new List<string>();
+        [Required(ErrorMessage = "At least one role must be specified.")]
+        [MinLength(1, ErrorMessage = "At least one role must be provided.")]
+        public List<string> Roles { get; set; } = new();
     }
 }
