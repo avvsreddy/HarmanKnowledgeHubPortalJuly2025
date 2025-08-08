@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace HarmanKnowledgeHubPortal.Domain.Repositories
 {
-    public interface IUserRepository
+    public interface IRoleRepository
     {
-        Task<User?> GetByEmailAsync(string email);
-        Task<User?> GetByIdAsync(int id);
-        Task AddAsync(User user);
-        Task<bool> ExistsAsync(string email);
+        Task<Role?> GetByNameAsync(string roleName);
+        Task<List<Role>> GetAllAsync();
     }
 }
+
