@@ -4,13 +4,10 @@ namespace HarmanKnowledgeHubPortal.Domain.Services
 {
     public interface ICategoryService
     {
-        void CreateCategory(CategoryCreateDTO categoryCreateDTO);
-
-        // similarly add required methods in async format
-        List<CategoryCreateDTO> GetAllCategories();
-        CategoryCreateDTO GetCategoryById(int id);
-        void UpdateCategory(int id, CategoryCreateDTO categoryCreateDTO);
-        void SoftDeleteCategory(int id);
-
+        Task CreateCategoryAsync(CategoryCreateDTO dto);
+        Task<List<CategoryListDTO>> GetAllCategoriesAsync();
+        Task<CategoryListDTO> GetCategoryByIdAsync(int id);
+        Task UpdateCategoryAsync(int id, CategoryCreateDTO dto);
+        Task SoftDeleteCategoryAsync(int id);
     }
 }

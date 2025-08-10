@@ -1,21 +1,15 @@
 ﻿using HarmanKnowledgeHubPortal.Domain.Entities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace HarmanKnowledgeHubPortal.Domain.Repositories
 {
     public interface ICategoryRepository
     {
-        void Create(Category category);
-        List<Category> GetAll();    
-        
-        Category GetById(int id);
-
-        void Update(Category category);
-
-        void SoftDelete(int id);    
+        Task CreateAsync(Category category);
+        Task<List<Category>> GetAllAsync();
+        Task<Category> GetByIdAsync(int id);
+        Task UpdateAsync(Category category);
+        Task SoftDeleteAsync(int id);
     }
 }
