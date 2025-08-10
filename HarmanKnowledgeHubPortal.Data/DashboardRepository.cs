@@ -3,7 +3,6 @@ using HarmanKnowledgeHubPortal.Domain.Entities;
 using HarmanKnowledgeHubPortal.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 

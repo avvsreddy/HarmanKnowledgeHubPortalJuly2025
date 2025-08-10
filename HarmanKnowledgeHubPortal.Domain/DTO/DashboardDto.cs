@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace HarmanKnowledgeHubPortal.Domain.DTO
 {
@@ -11,16 +10,15 @@ namespace HarmanKnowledgeHubPortal.Domain.DTO
         public int ReviewedArticles { get; set; }
         public int RatedArticles { get; set; }
 
-        public Dictionary<string, int> ArticlesByCategory { get; set; }
-        public Dictionary<int, int> ArticlesByYear { get; set; }
-        public Dictionary<int, int> ArticlesAddedThisMonth { get; set; }
-
-        public List<TopPublisherDto> TopPublishersThisMonth { get; set; }
+        public Dictionary<string, int> ArticlesByCategory { get; set; } = new();
+        public Dictionary<int, int> ArticlesByYear { get; set; } = new();
+        public Dictionary<int, int> ArticlesAddedThisMonth { get; set; } = new();
+        public List<TopPublisherDto> TopPublishersThisMonth { get; set; } = new();
     }
 
     public class TopPublisherDto
     {
-        public string PublisherName { get; set; }
+        public string PublisherName { get; set; } = string.Empty;
         public int ArticlesCount { get; set; }
         public int RatingsCount { get; set; }
     }
