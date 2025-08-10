@@ -1,35 +1,36 @@
-using HarmanKnowledgeHubPortal.Domain.Services;
+// Updated by Vinayak
 
+// Updated by Venkat for login feature
 
-namespace HarmanKnowledgeHubPortal // <== FIXED: Don't use ".Services" here
-{
+namespace HarmanKnowledgeHubPortal.Api
+{ //added new branch
     public class Program
     {
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllers();
-            builder.Services.AddOpenApi();
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            // Add services to the container.
 
-            // Registering the Notification service correctly
-            builder.Services.AddScoped<INotifications, NotificationService>();
+            builder.Services.AddControllers();
+            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+            builder.Services.AddOpenApi();
 
             var app = builder.Build();
 
-            app.UseSwagger();
-            app.UseSwaggerUI();
-
+            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
             }
 
             app.UseHttpsRedirection();
+
             app.UseAuthorization();
+
+
             app.MapControllers();
+
             app.Run();
         }
     }
