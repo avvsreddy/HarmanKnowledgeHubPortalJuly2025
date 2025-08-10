@@ -1,60 +1,36 @@
-﻿using HarmanKnowledgeHubPortal.Domain.Entities;
+﻿using HarmanKnowledgeHubPortal.Domain.DTO;
 using HarmanKnowledgeHubPortal.Domain.Repositories;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using HarmanKnowledgeHubPortal.Domain.DTO;
 
 namespace HarmanKnowledgeHubPortal.Domain.Services
 {
-    public class DashboardService
+    public class DashboardService : IDashboardService
     {
-        private readonly IDashboardAndReportsRepository _dashboardRepo;
+        private readonly IDashboardRepository _dashboardRepository;
+        private readonly INotificationService _notificationService;
 
-        public DashboardService(IDashboardAndReportsRepository dashboardRepo)
+        public DashboardService(IDashboardRepository dashboardRepository, INotificationService notificationService)
         {
-            _dashboardRepo = dashboardRepo;
+            _dashboardRepository = dashboardRepository;
+            _notificationService = notificationService;
         }
 
-        public async Task<DashboardDto> GetDashboardAsync(int userId)
+        public async Task<DashboardDto> GetDashboardAsync()
         {
-            var report = await _dashboardRepo.GetDashboardByUserIdAsync(userId);
+            var dashboard = await _dashboardRepository.GetDashboardAsync();
 
-            if (report == null) return null;
-
-            return new DashboardDto
+            if (dashboard.TopPublishersThisMonth.Any())
             {
-                TotalArticles = report.TotalArticles,
-                ArticlesApproved = report.ArticlesApproved,
-                ArticlesRejected = report.ArticlesRejected,
-                ArticlesPending = report.ArticlesPending,
-                TotalReviews = report.TotalReviews,
-                TotalRatings = report.TotalRatings,
-                CreatedOn = report.CreatedOn
-            };
-        }
+                var topPublisher = dashboard.TopPublishersThisMonth.First();
+                await _notificationService.SendEmailAsync(
+                    "publisher@example.com",
+                    "Top Publisher Award",
+                    $"Congratulations {topPublisher.PublisherName}! You are the top publisher this month with {topPublisher.ArticlesCount} articles."
+                );
+            }
 
-        public async Task<List<Report>> GetReportsAsync(int userId, DateTime? startDate, DateTime? endDate, string category)
-        {
-            return await _dashboardRepo.GetReportsAsync(userId, startDate, endDate, category);
+            return dashboard;
         }
-
-        public async Task CreateReportAsync(Report report)
-        {
-            await _dashboardRepo.CreateReportAsync(report);
-        }
-
-        public async Task UpdateReportAsync(Report report)
-        {
-            await _dashboardRepo.UpdateReportAsync(report);
-        }
-
-        public async Task SoftDeleteReportAsync(int id)
-        {
-            await _dashboardRepo.SoftDeleteReportAsync(id);
-        }
-
     }
 }

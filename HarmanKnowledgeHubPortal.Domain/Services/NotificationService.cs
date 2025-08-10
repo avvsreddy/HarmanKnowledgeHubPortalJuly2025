@@ -1,27 +1,21 @@
-﻿using HarmanKnowledgeHubPortal.Domain.Services;
-
-using System.Net;
+﻿using System.Net;
 using System.Net.Mail;
+using System.Threading.Tasks;
 
-namespace HarmanKnowledgeHubPortal.Domain.Services;
-
-public class NotificationService : INotifications
+namespace HarmanKnowledgeHubPortal.Domain.Services
 {
-    public async Task SendNotificationAsync(string toEmail, string subject, string message)
+    public class NotificationService : INotificationService
     {
-        var fromEmail = "your-email@example.com";
-        var smtpHost = "smtp.gmail.com";
-        var smtpPort = 587;
-        var emailPassword = "your-app-password"; // Use app password for Gmail
-
-        var mail = new MailMessage(fromEmail, toEmail, subject, message);
-        var smtpClient = new SmtpClient(smtpHost)
+        public async Task SendEmailAsync(string to, string subject, string body)
         {
-            Port = smtpPort,
-            Credentials = new NetworkCredential(fromEmail, emailPassword),
-            EnableSsl = true
-        };
+            using (var smtp = new SmtpClient("smtp.gmail.com", 587))
+            {
+                smtp.Credentials = new NetworkCredential("your-email@gmail.com", "your-app-password");
+                smtp.EnableSsl = true;
 
-        await smtpClient.SendMailAsync(mail);
+                var message = new MailMessage("your-email@gmail.com", to, subject, body);
+                await smtp.SendMailAsync(message);
+            }
+        }
     }
 }
