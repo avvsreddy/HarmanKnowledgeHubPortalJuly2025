@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HarmanKnowledgeHubPortal.Domain\HarmanKnowledgeHubPortal.Domain.csproj" />
+    <ProjectReference Include="..\HarmanKnowledgeHubPortal.Data\HarmanKnowledgeHubPortal.Data.csproj" />
   </ItemGroup>
 
 </Project>

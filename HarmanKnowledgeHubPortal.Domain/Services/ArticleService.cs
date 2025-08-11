@@ -3,12 +3,32 @@ using HarmanKnowledgeHubPortal.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 
+
+using System.Linq;
+using System.Threading.Tasks;
+
 namespace HarmanKnowledgeHubPortal.Domain.Services
 {
-        public class ArticleService : IArticleService
+    public class ArticleService : IArticleService
+    {
+        private readonly IArticlesRepository _articleRepo;
+        private readonly ICategoryRepository _categoryRepo;
+        private readonly INotificationService _notificationService;
+
+        public ArticleService(
+            IArticlesRepository articleRepo,
+            ICategoryRepository categoryRepo,
+            INotificationService notificationService)
         {
-            private readonly IArticlesRepository _articleRepo;
-            private readonly ICategoryRepository _categoryRepo;
+            _articleRepo = articleRepo;
+            _categoryRepo = categoryRepo;
+            _notificationService = notificationService;
+        }
+
+        public async Task ReviewArticlesAsync(ReviewArticleDto dto)
+        {
+            var action = dto.Action.ToLower();
+
 
         public ArticleService(IArticlesRepository articleRepo, ICategoryRepository categoryRepo)
         {
@@ -16,34 +36,57 @@ namespace HarmanKnowledgeHubPortal.Domain.Services
             _categoryRepo = categoryRepo;
         }
 
-            public async Task ReviewArticlesAsync(ReviewArticleDto dto)
+            if (action == "approve")
             {
-                var action = dto.Action.ToLower();
-
-                if (action == "approve")
-                {
-                    await _articleRepo.ApproveAsync(dto.ArticleIds);
-                }
-                else if (action == "reject")
-                {
-                    await _articleRepo.RejectAsync(dto.ArticleIds);
-                }
-                else
-                {
-                    throw new Exception("Invalid action. Only 'Approve' or 'Reject' are allowed.");
-                }
+                await _articleRepo.ApproveAsync(dto.ArticleIds);
+                await _notificationService.SendEmailAsync(
+                    "publisher@example.com",
+                    "Article Approved",
+                    "Your article has been approved."
+                );
             }
-
-            public async Task<List<ReviewArticleDto>> GetPendingArticlesAsync(int categoryId)
+            else if (action == "reject")
             {
-                var articles = await _articleRepo.ReviewAsync(categoryId);
-
-                return articles.Select(article => new ReviewArticleDto
-                {
-                    ArticleIds = new List<int> { article.Id },
-                    Action = "Pending"
-                }).ToList();
+                await _articleRepo.RejectAsync(dto.ArticleIds);
+                await _notificationService.SendEmailAsync(
+                    "publisher@example.com",
+                    "Article Rejected",
+                    "Your article has been rejected."
+                );
+            }
+            else
+            {
+                throw new Exception("Invalid action. Only 'Approve' or 'Reject' are allowed.");
             }
         }
-    }
 
+        public async Task<List<ReviewArticleDto>> GetPendingArticlesAsync(int categoryId)
+        {
+            var articles = await _articleRepo.ReviewAsync(categoryId);
+
+            foreach (var article in articles)
+            {
+                await _notificationService.SendEmailAsync(
+                    "publisher@example.com",
+                    "Article Pending Review",
+                    $"Your article '{article.Title}' is pending review."
+                );
+            }
+
+            return articles.Select(article => new ReviewArticleDto
+            {
+                ArticleIds = new List<int> { article.Id },
+                Action = "Pending"
+            }).ToList();
+        }
+
+        public async Task SubmitArticleAsync(int articleId)
+        {
+            await _notificationService.SendEmailAsync(
+                "publisher@example.com",
+                "Article Submitted",
+                "Your article has been submitted successfully."
+            );
+        }
+    }
+}
