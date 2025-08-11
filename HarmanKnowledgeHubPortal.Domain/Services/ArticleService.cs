@@ -2,6 +2,8 @@
 using HarmanKnowledgeHubPortal.Domain.Repositories;
 using System;
 using System.Collections.Generic;
+
+
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,6 +28,13 @@ namespace HarmanKnowledgeHubPortal.Domain.Services
         public async Task ReviewArticlesAsync(ReviewArticleDto dto)
         {
             var action = dto.Action.ToLower();
+
+
+        public ArticleService(IArticlesRepository articleRepo, ICategoryRepository categoryRepo)
+        {
+            _articleRepo = articleRepo;
+            _categoryRepo = categoryRepo;
+        }
 
             if (action == "approve")
             {
