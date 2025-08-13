@@ -9,6 +9,7 @@ namespace HarmanKnowledgeHubPortal.Domain.Repositories
 {
     public interface IArticlesRepository
     {
+
         Task SubmitAsync(Article article);
         Task UpdateAsync(Article article);
         Task RejectAsync(List<int> articleIds);
@@ -16,5 +17,6 @@ namespace HarmanKnowledgeHubPortal.Domain.Repositories
 
         Task<List<Article>> BrowseAsync(int categoryId, string tag);
         Task<List<Article>> ReviewAsync(int categoryId);
+
     }
 }

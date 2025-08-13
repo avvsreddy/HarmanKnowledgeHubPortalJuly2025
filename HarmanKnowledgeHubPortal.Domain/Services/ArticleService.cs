@@ -3,50 +3,89 @@ using HarmanKnowledgeHubPortal.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace HarmanKnowledgeHubPortal.Domain.Services
 {
-        public class ArticleService : IArticleService
+    public class ArticleService : IArticleService
+    {
+        private readonly IArticlesRepository _articleRepo;
+        private readonly ICategoryRepository _categoryRepo;
+        private readonly INotificationService _notificationService;
+
+        public ArticleService(
+            IArticlesRepository articleRepo,
+            ICategoryRepository categoryRepo,
+            INotificationService notificationService)
         {
-            private readonly IArticlesRepository _articleRepo;
-            private readonly ICategoryRepository _categoryRepo;
+            _articleRepo = articleRepo;
+            _categoryRepo = categoryRepo;
+            _notificationService = notificationService;
+        }
 
-            public ArticleService(IArticlesRepository articleRepo, ICategoryRepository categoryRepo)
+        // 1️⃣ Get pending URLs for selected category
+        public async Task<List<ApproveUrlsResponseDto>> GetPendingApprovalsAsync(ApproveUrlsRequestDto request)
+        {
+            // Get category by name
+            var category = await _categoryRepo.GetByNameAsync(request.Category);
+            if (category == null)
+                return new List<ApproveUrlsResponseDto>();
+
+            // Get pending articles from repo
+            var articles = await _articleRepo.ReviewAsync(category.Id);
+
+            return articles.Select(article => new ApproveUrlsResponseDto
             {
-                _articleRepo = articleRepo;
-                _categoryRepo = categoryRepo;
+                Select = false, // default unchecked
+                Title = article.Title,
+                Url = article.URL,
+                Category = category.CategoryName
+            }).ToList();
+        }
+
+        // 2️⃣ Approve selected URLs
+        public async Task<ApproveRejectActionResponseDto> ApproveUrlsAsync(ApproveRejectActionRequestDto request)
+        {
+            await _articleRepo.ApproveAsync(request.UrlIds);
+
+            // Send notifications
+            foreach (var id in request.UrlIds)
+            {
+                await _notificationService.SendEmailAsync(
+                    "publisher@example.com",
+                    "Article Approved",
+                    $"Your article (ID: {id}) has been approved."
+                );
             }
 
-            public async Task ReviewArticlesAsync(ReviewArticleDto dto)
+            return new ApproveRejectActionResponseDto
             {
-                var action = dto.Action.ToLower();
+                StatusCode = (int)HttpStatusCode.OK,
+                Message = "Selected URLs approved successfully."
+            };
+        }
 
-                if (action == "approve")
-                {
-                    await _articleRepo.ApproveAsync(dto.ArticleIds);
-                }
-                else if (action == "reject")
-                {
-                    await _articleRepo.RejectAsync(dto.ArticleIds);
-                }
-                else
-                {
-                    throw new Exception("Invalid action. Only 'Approve' or 'Reject' are allowed.");
-                }
+        // 3️⃣ Reject selected URLs
+        public async Task<ApproveRejectActionResponseDto> RejectUrlsAsync(ApproveRejectActionRequestDto request)
+        {
+            await _articleRepo.RejectAsync(request.UrlIds);
+
+            // Send notifications
+            foreach (var id in request.UrlIds)
+            {
+                await _notificationService.SendEmailAsync(
+                    "publisher@example.com",
+                    "Article Rejected",
+                    $"Your article (ID: {id}) has been rejected."
+                );
             }
 
-            public async Task<List<ReviewArticleDto>> GetPendingArticlesAsync(int categoryId)
+            return new ApproveRejectActionResponseDto
             {
-                var articles = await _articleRepo.ReviewAsync(categoryId);
-
-                return articles.Select(article => new ReviewArticleDto
-                {
-                    ArticleIds = new List<int> { article.Id },
-                    Action = "Pending"
-                }).ToList();
-            }
+                StatusCode = (int)HttpStatusCode.OK,
+                Message = "Selected URLs rejected successfully."
+            };
         }
     }
-
+}

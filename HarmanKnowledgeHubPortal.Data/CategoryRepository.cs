@@ -1,11 +1,8 @@
 ﻿using HarmanKnowledgeHubPortal.Domain.Entities;
 using HarmanKnowledgeHubPortal.Domain.Repositories;
+using HarmanKnowledgeHubPortal.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace HarmanKnowledgeHubPortal.Data
 {
@@ -18,40 +15,43 @@ namespace HarmanKnowledgeHubPortal.Data
             _context = context;
         }
 
-        public void Create(Category category)
+        public async Task CreateAsync(Category category)
         {
-            category.DateTimeCreate = DateTime.UtcNow;
+            category.DateTimeCreate = System.DateTime.UtcNow;
             _context.Categories.Add(category);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public List<Category> GetAll()
+        public async Task<List<Category>> GetAllAsync()
         {
-            return _context.Categories
+            return await _context.Categories
                 .Where(c => !c.IsDeleted)
-                .OrderByDescending(c => c.DateTimeCreate)
-                .ToList();
+                .ToListAsync();
         }
 
-        public Category GetById(int id)
+        public async Task<Category> GetByIdAsync(int id)
         {
-            return _context.Categories
-                .FirstOrDefault(c => c.Id == id && !c.IsDeleted);
+            return await _context.Categories
+                .FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
+        }
+        public async Task<Category> GetByNameAsync(string name) // ✅ Implementation
+        {
+            return await _context.Categories.FirstOrDefaultAsync(c => c.CategoryName == name);
         }
 
-        public void Update(Category category)
+        public async Task UpdateAsync(Category category)
         {
             _context.Categories.Update(category);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void SoftDelete(int id)
+        public async Task SoftDeleteAsync(int id)
         {
-            var category = _context.Categories.Find(id);
+            var category = await _context.Categories.FindAsync(id);
             if (category != null && !category.IsDeleted)
             {
                 category.IsDeleted = true;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
     }

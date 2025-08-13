@@ -1,6 +1,9 @@
 ﻿using HarmanKnowledgeHubPortal.Domain.DTO;
 using HarmanKnowledgeHubPortal.Domain.Entities;
 using HarmanKnowledgeHubPortal.Domain.Repositories;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace HarmanKnowledgeHubPortal.Domain.Services
 {
@@ -10,68 +13,66 @@ namespace HarmanKnowledgeHubPortal.Domain.Services
 
         public CategoryService(ICategoryRepository categoryRepository)
         {
-            this._categoryRepository = categoryRepository;
+            _categoryRepository = categoryRepository;
         }
 
-        public void CreateCategory(CategoryCreateDTO categoryCreateDTO)
+        public async Task CreateCategoryAsync(CategoryCreateDTO dto)
         {
-            // convert DTO into Entities
-            Category category = new Category
+            var category = new Category
             {
-                CategoryName = categoryCreateDTO.CategoryName,
-                CategoryDescription = categoryCreateDTO.CategoryDescription,
-                DateTimeCreate = DateTime.Now,
+                CategoryName = dto.CategoryName,
+                CategoryDescription = dto.CategoryDescription,
+                DateTimeCreate = System.DateTime.UtcNow,
                 IsDeleted = false
             };
-            //call DAL methods
-            _categoryRepository.Create(category);
+
+            await _categoryRepository.CreateAsync(category);
         }
 
-        public List<CategoryCreateDTO> GetAllCategories()
+        public async Task<List<CategoryListDTO>> GetAllCategoriesAsync()
         {
-            var categories = _categoryRepository.GetAll();
+            var categories = await _categoryRepository.GetAllAsync();
 
-            return categories.Select(category => new CategoryCreateDTO
+            return categories.Select(c => new CategoryListDTO
             {
-                Id = category.Id,
-                CategoryName = category.CategoryName,
-                CategoryDescription = category.CategoryDescription,
-                DateTimeCreate = category.DateTimeCreate
+                Id = c.Id,
+                CategoryName = c.CategoryName,
+                CategoryDescription = c.CategoryDescription,
+                //DateTimeCreate = c.DateTimeCreate
             }).ToList();
         }
 
-        public CategoryCreateDTO GetCategoryById(int id)
+        public async Task<CategoryListDTO> GetCategoryByIdAsync(int id)
         {
-            var category = _categoryRepository.GetById(id);
+            var category = await _categoryRepository.GetByIdAsync(id);
 
             if (category == null || category.IsDeleted)
                 return null;
 
-            return new CategoryCreateDTO
+            return new CategoryListDTO
             {
                 Id = category.Id,
                 CategoryName = category.CategoryName,
                 CategoryDescription = category.CategoryDescription,
-                DateTimeCreate = category.DateTimeCreate
+                //DateTimeCreate = category.DateTimeCreate
             };
         }
 
-        public void UpdateCategory(int id, CategoryCreateDTO categoryCreateDTO)
+        public async Task UpdateCategoryAsync(int id, CategoryCreateDTO dto)
         {
-            var category = _categoryRepository.GetById(id);
+            var category = await _categoryRepository.GetByIdAsync(id);
 
             if (category != null && !category.IsDeleted)
             {
-                category.CategoryName = categoryCreateDTO.CategoryName;
-                category.CategoryDescription = categoryCreateDTO.CategoryDescription;
-
-                _categoryRepository.Update(category);
+                category.CategoryName = dto.CategoryName;
+                category.CategoryDescription = dto.CategoryDescription;
+                await _categoryRepository.UpdateAsync(category);
             }
         }
 
-        public void SoftDeleteCategory(int id)
+        public async Task SoftDeleteCategoryAsync(int id)
         {
-            _categoryRepository.SoftDelete(id);
+            await _categoryRepository.SoftDeleteAsync(id);
         }
     }
 }
