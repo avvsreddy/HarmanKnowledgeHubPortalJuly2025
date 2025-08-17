@@ -10,3 +10,4 @@ namespace HarmanKnowledgeHubPortal.Domain.Repositories
         Task<IEnumerable<SubmittedUrl>> GetAllApprovedAsync();
     }
 }
+

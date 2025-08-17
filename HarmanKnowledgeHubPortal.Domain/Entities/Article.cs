@@ -1,31 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HarmanKnowledgeHubPortal.Domain.Entities;
 
-namespace HarmanKnowledgeHubPortal.Domain.Entities
+public class Article
 {
-    public class Article
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public string Title { get; set; }
-        public string URL { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
 
-        public string Description { get; set; }
+    public int CategoryId { get; set; }
+    public Category Category { get; set; }
 
-        public ArticleStatus Status { get; set; }
+    public string PostedBy { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public Category Category { get; set; }
-
-        public List<Rating> RatingsAndReviews { get; set; }
-
-        public List<Tag> Tags { get; set; }
-
-
-        public string SubmittedBy { get; set; }
-
-        public DateTime DateSubmitted { get; set; }
-    }
+    public ICollection<ArticleTag> ArticleTags { get; set; } = new List<ArticleTag>();
+    public ArticleStatus Status { get; set; } // enum Pending/Approved/Rejected
+    public object RatingsAndReviews { get; set; }
 }

@@ -1,4 +1,9 @@
 ﻿using HarmanKnowledgeHubPortal.Domain.DTO;
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 6a0238d57cfb7e39542ad51a0ff39dee9adac2c6
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -6,6 +11,7 @@ namespace HarmanKnowledgeHubPortal.Domain.Services
 {
       public interface IArticleService
     {
+<<<<<<< HEAD
         /// <summary>
         /// Gets pending articles for review based on the selected category.
         /// </summary>
@@ -28,4 +34,10 @@ namespace HarmanKnowledgeHubPortal.Domain.Services
         Task<ApproveRejectActionResponseDto> RejectUrlsAsync(ApproveRejectActionRequestDto request);
     }
 
+=======
+        Task<List<ReviewArticleDto>> GetPendingArticlesAsync(int categoryId);
+        Task ReviewArticlesAsync(ReviewArticleDto dto);
+        Task SubmitArticleAsync(int articleId);
+    }
+>>>>>>> 6a0238d57cfb7e39542ad51a0ff39dee9adac2c6
 }

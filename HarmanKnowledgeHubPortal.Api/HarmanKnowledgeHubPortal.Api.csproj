@@ -19,9 +19,16 @@
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
 	</ItemGroup>
 
+<<<<<<< HEAD
 	<ItemGroup>
 		<ProjectReference Include="..\HarmanKnowledgeHubPortal.Domain\HarmanKnowledgeHubPortal.Domain.csproj" />
 		<ProjectReference Include="..\HarmanKnowledgeHubPortal.Data\HarmanKnowledgeHubPortal.Data.csproj" />
 	</ItemGroup>
+=======
+  <ItemGroup>
+    <ProjectReference Include="..\HarmanKnowledgeHubPortal.Domain\HarmanKnowledgeHubPortal.Domain.csproj" />
+    <ProjectReference Include="..\HarmanKnowledgeHubPortal.Data\HarmanKnowledgeHubPortal.Data.csproj" />
+  </ItemGroup>
+>>>>>>> 6a0238d57cfb7e39542ad51a0ff39dee9adac2c6
 
 </Project>

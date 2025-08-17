@@ -2,6 +2,8 @@
 using HarmanKnowledgeHubPortal.Domain.Repositories;
 using System;
 using System.Collections.Generic;
+
+
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -39,7 +41,7 @@ namespace HarmanKnowledgeHubPortal.Domain.Services
             {
                 Select = false, // default unchecked
                 Title = article.Title,
-                Url = article.URL,
+                Url = article.Url,
                 Category = category.CategoryName
             }).ToList();
         }
