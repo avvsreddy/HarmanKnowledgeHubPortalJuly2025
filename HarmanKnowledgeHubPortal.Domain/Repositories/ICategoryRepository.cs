@@ -9,6 +9,7 @@ namespace HarmanKnowledgeHubPortal.Domain.Repositories
         Task CreateAsync(Category category);
         Task<List<Category>> GetAllAsync();
         Task<Category> GetByIdAsync(int id);
+        Task<Category> GetByNameAsync(string name);
         Task UpdateAsync(Category category);
         Task SoftDeleteAsync(int id);
     }

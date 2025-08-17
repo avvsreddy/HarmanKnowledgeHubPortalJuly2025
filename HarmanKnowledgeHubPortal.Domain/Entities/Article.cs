@@ -16,4 +16,5 @@ public class Article
 
     public ICollection<ArticleTag> ArticleTags { get; set; } = new List<ArticleTag>();
     public ArticleStatus Status { get; set; } // enum Pending/Approved/Rejected
+    public object RatingsAndReviews { get; set; }
 }
