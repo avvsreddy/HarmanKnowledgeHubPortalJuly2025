@@ -13,8 +13,11 @@ public class Article
 
     public string PostedBy { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    //public DateTime DateSubmitted { get; set; }
 
     public ICollection<ArticleTag> ArticleTags { get; set; } = new List<ArticleTag>();
     public ArticleStatus Status { get; set; } // enum Pending/Approved/Rejected
-    public object RatingsAndReviews { get; set; }
+    //public object RatingsAndReviews { get; set; }
+    public ICollection<RatingAndReview> RatingsAndReviews { get; set; } = new List<RatingAndReview>();
+
 }

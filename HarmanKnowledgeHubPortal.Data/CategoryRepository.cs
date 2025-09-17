@@ -33,13 +33,13 @@ namespace HarmanKnowledgeHubPortal.Data
         {
             return await _context.Categories
                 .FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
-<<<<<<< HEAD
+
         }
         public async Task<Category> GetByNameAsync(string name) // ✅ Implementation
         {
             return await _context.Categories.FirstOrDefaultAsync(c => c.CategoryName == name);
-=======
->>>>>>> 6a0238d57cfb7e39542ad51a0ff39dee9adac2c6
+
+
         }
 
         public async Task UpdateAsync(Category category)

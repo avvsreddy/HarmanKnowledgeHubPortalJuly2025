@@ -11,4 +11,4 @@ namespace HarmanKnowledgeHubPortal.Domain.Services
         Task<IEnumerable<SubmittedUrl>> GetApprovedUrlsAsync();
     }
 }
-}
+

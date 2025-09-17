@@ -40,18 +40,20 @@ namespace HarmanKnowledgeHubPortal.Data
                     .ToDictionary(g => g.Key, g => g.Count()),
 
                 ArticlesByYear = articles
-                    .GroupBy(a => a.DateSubmitted.Year)
+                    //.GroupBy(a => a.DateSubmitted.Year)
+                    //.ToDictionary(g => g.Key, g => g.Count()),
+                    .GroupBy(a => a.CreatedAt.Year)  // ✅ replace with your actual property
                     .ToDictionary(g => g.Key, g => g.Count()),
 
                 ArticlesAddedThisMonth = articles
-                    .Where(a => a.DateSubmitted.Month == currentMonth && a.DateSubmitted.Year == currentYear)
-                    .GroupBy(a => a.DateSubmitted.Day)
+                    .Where(a => a.CreatedAt.Month == currentMonth && a.CreatedAt.Year == currentYear)
+                    .GroupBy(a => a.CreatedAt.Day)
                     .OrderBy(g => g.Key)
                     .ToDictionary(g => g.Key, g => g.Count()),
 
                 TopPublishersThisMonth = articles
-                    .Where(a => a.DateSubmitted.Month == currentMonth && a.DateSubmitted.Year == currentYear)
-                    .GroupBy(a => a.SubmittedBy)
+                    .Where(a => a.CreatedAt.Month == currentMonth && a.CreatedAt.Year == currentYear)
+                    .GroupBy(a => a.PostedBy)
                     .Select(g => new TopPublisherDto
                     {
                         PublisherName = g.Key,

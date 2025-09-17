@@ -11,7 +11,6 @@ namespace HarmanKnowledgeHubPortal.Domain.Entities
         public int Id { get; set; }
         public int RatingNumber {  get; set; }
         public string Review { get; set; }
-
         public User User { get; set; }
 
     }
